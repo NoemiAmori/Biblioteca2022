@@ -5,6 +5,8 @@
     int paginaAtual = Int32.Parse(ViewData["PaginaAtual"].ToString());
     int numLivroPorPag = (Model.Count<FiltroPorPag ? Model.Count : FiltroPorPag);
     int numTotalDePag = Model.Count/numLivroPorPag + (Model.Count%numLivroPorPag == 0 ? 0 : 1);
+
+    string classe = "";
 }
 
 <div class="row">
@@ -62,18 +64,31 @@
             </thead>
 
             <tbody>
-                @for (int i = (paginaAtual-1)*numLivroPorPag; i<(numLivroPorPag*paginaAtual<Model.Count?numLivroPorPag*paginaAtual:Model.Count); i++)
+                @foreach (var e in Model)
                 {
-                <tr>
-                    <td>@Model[i].Id</td>
-                    <td>@Model[i].NomeUsuario</td>
-                    <td>@Model[i].DataEmprestimo.ToString("dd/MM/yyyy")</td>
-                    <td>@Model[i].DataDevolucao.ToString("dd/MM/yyyy")</td>
-                    <td>@Model[i].Livro.Titulo</td>
-                    <td>@Model[i].Livro.Autor</td>
-                    <td><a href="/Emprestimo/Edicao/@Model[i].Id">Editar</a></td>
-                </tr>
+                    @if ((System.DateTime.Compare(System.DateTime.Now, e.DataDevolucao) > 0))
+                    {
+                        classe = "text-danger";
+                    }
+                    else
+                    {
+                        classe = "";
+                    }
+                
+                    @for (int i = (paginaAtual-1)*numLivroPorPag; i<(numLivroPorPag*paginaAtual<Model.Count?numLivroPorPag*paginaAtual:Model.Count); i++)
+                    {
+                    <tr>
+                        <td>@Model[i].Id</td>
+                        <td>@Model[i].NomeUsuario</td>
+                        <td>@Model[i].DataEmprestimo.ToString("dd/MM/yyyy")</td>
+                        <td>@Model[i].DataDevolucao.ToString("dd/MM/yyyy")</td>
+                        <td>@Model[i].Livro.Titulo</td>
+                        <td>@Model[i].Livro.Autor</td>
+                        <td><a href="/Emprestimo/Edicao/@Model[i].Id">Editar</a></td>
+                    </tr>
+                    }
                 }
+                
             </tbody>
         </table>
         }
